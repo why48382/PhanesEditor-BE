@@ -3,7 +3,7 @@ package org.example.coding_convention.project_member.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.example.coding_convention.common.model.BaseResponse;
+import org.example.coding_convention.common.response.BaseResponse;
 import org.example.coding_convention.project_member.model.ProjectMemberDto;
 import org.example.coding_convention.project_member.service.ProjectMemberService;
 import org.springframework.web.bind.annotation.*;

@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.example.coding_convention.common.model.BaseResponse;
+import org.example.coding_convention.common.response.BaseResponse;
 import org.example.coding_convention.user.model.AuthDto;
 import org.example.coding_convention.user.service.AuthService;
 import org.springframework.web.bind.annotation.*;

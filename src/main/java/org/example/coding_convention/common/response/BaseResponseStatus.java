@@ -1,4 +1,4 @@
-package org.example.coding_convention.common.model;
+package org.example.coding_convention.common.response;
 
 import lombok.Getter;
 

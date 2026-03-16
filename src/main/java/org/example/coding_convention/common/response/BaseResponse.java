@@ -1,10 +1,10 @@
-package org.example.coding_convention.common.model;
+package org.example.coding_convention.common.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import static org.example.coding_convention.common.model.BaseResponseStatus.SUCCESS;
+import static org.example.coding_convention.common.response.BaseResponseStatus.SUCCESS;
 
 @Getter
 @AllArgsConstructor

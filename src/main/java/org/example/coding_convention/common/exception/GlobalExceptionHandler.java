@@ -1,7 +1,7 @@
 package org.example.coding_convention.common.exception;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.coding_convention.common.model.BaseResponse;
+import org.example.coding_convention.common.response.BaseResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.example.coding_convention.common.model.BaseResponseStatus.REQUEST_ERROR;
+import static org.example.coding_convention.common.response.BaseResponseStatus.REQUEST_ERROR;
 
 @Slf4j
 @RestControllerAdvice
