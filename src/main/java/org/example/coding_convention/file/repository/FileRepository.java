@@ -9,7 +9,4 @@ import java.util.Optional;
 
 public interface FileRepository extends JpaRepository<Files, Integer> {
     Optional<Files> findByPath(String fileName);
-
-    @Query("SELECT f FROM Files f ")
-    Optional<Files> findByFilesId(Integer idx);
 }
