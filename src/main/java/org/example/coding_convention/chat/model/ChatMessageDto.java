@@ -1,4 +1,4 @@
-package org.example.coding_convention.websocket.chat;
+package org.example.coding_convention.chat.model;
 
 import lombok.Getter;
 

@@ -1,4 +1,5 @@
 package org.example.coding_convention.websocket.editor;
+
 public class CursorPosition {
     private String senderId;
     private int line;

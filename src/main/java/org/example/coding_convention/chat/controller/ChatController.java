@@ -6,7 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.coding_convention.chat.model.ChatsDto;
 import org.example.coding_convention.chat.service.ChatService;
-import org.example.coding_convention.common.model.BaseResponse;
+import org.example.coding_convention.common.response.BaseResponse;
 import org.example.coding_convention.user.model.UserDto;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;

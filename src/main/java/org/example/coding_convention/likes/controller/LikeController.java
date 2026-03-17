@@ -1,7 +1,7 @@
 package org.example.coding_convention.likes.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.coding_convention.common.model.BaseResponse;
+import org.example.coding_convention.common.response.BaseResponse;
 import org.example.coding_convention.likes.service.LikeService;
 import org.example.coding_convention.user.model.UserDto;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;

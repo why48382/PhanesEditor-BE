@@ -3,8 +3,7 @@ package org.example.coding_convention.project.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.example.coding_convention.common.model.BaseResponse;
-import org.example.coding_convention.project.model.Project;
+import org.example.coding_convention.common.response.BaseResponse;
 import org.example.coding_convention.project.model.ProjectDto;
 import org.example.coding_convention.project.service.ProjectService;
 import org.example.coding_convention.user.model.UserDto;
@@ -12,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
