@@ -17,7 +17,9 @@ import java.util.List;
 @Table(
         name = "users", // 일부 DB에서 user 는 예약어라 충돌 방지
         indexes = {
-                @Index(name = "idx_users_platform_key", columnList = "platform, platformKey")
+                @Index(name = "idx_users_platform_key", columnList = "platform, platformKey"),
+                @Index(name = "idx_users_email", columnList = "email"),
+                @Index(name = "idx_users_nickname", columnList = "nickname")
         }
 )
 @Getter
