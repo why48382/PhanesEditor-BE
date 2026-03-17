@@ -2,14 +2,11 @@ package org.example.coding_convention.project.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.coding_convention.chat.model.ChatMessageDto;
-import org.example.coding_convention.websocket.editor.EditorDto;
+import org.example.coding_convention.project.model.EditorDto;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.security.Principal;
 
 @Slf4j
 @RestController

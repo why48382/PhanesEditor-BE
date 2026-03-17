@@ -1,4 +1,4 @@
-package org.example.coding_convention.websocket.editor;
+package org.example.coding_convention.project.model;
 
 import lombok.Getter;
 
