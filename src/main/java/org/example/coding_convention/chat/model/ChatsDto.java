@@ -52,8 +52,6 @@ public class ChatsDto {
                     .message(message)
                     .build();
         }
-
-
     }
 
 
