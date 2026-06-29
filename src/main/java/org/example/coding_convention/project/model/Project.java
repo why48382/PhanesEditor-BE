@@ -63,7 +63,7 @@ public class Project {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
     private List<Like> likeList;
 
-    // 반정규화된 좋아요 수 컬럼 추가
+    @Builder.Default
     @Column(name = "like_count", nullable = false)
     private int likeCount = 0;
 
