@@ -7,8 +7,6 @@ import org.example.coding_convention.user.model.User;
 import org.example.coding_convention.user.service.UserService;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class ProjectMemberService {
