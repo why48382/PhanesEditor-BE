@@ -39,4 +39,7 @@ out/
 ### 모든 로그파일 ###
 *.log
 
+### 환경 변수 ###
+.env
+
 /src/main/resources/application.yml
