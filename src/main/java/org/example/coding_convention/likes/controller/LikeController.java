@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.coding_convention.common.response.BaseResponse;
 import org.example.coding_convention.likes.service.LikeService;
 import org.example.coding_convention.user.model.UserDto;
-import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
