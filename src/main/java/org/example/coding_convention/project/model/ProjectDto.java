@@ -97,16 +97,13 @@ public class ProjectDto {
         private String language;
         private String creator;
 
-        // 유저의 아이디를 기준으로 가져와야 함
-        // SELECT * FROM project WHERE user_idx = ?
-
         public static ProjectList from(ProjectMember entity) {
             return ProjectList.builder()
-                    .idx(entity.getIdx())
+                    .idx(entity.getProject().getIdx())
                     .projectName(entity.getProject().getProjectName())
                     .description(entity.getProject().getDescription())
                     .language(entity.getProject().getLanguage().toString())
-                    .creator(entity.getUser().getNickname())
+                    .creator(entity.getProject().getUser().getNickname())
                     .build();
         }
     }
