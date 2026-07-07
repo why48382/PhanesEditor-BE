@@ -29,12 +29,12 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         if (jwt != null) {
             String cookieValue = String.format(
-                    "SJB_AT=%s; Path=/; Domain=gomorebi.kro.kr; HttpOnly; Secure; SameSite=None; Max-Age=%d",
+                    "access_token=%s; Path=/; HttpOnly; SameSite=Lax; Max-Age=%d",
                     jwt, 60 * 60 * 24
             );
             response.addHeader("Set-Cookie", cookieValue);
             // 소셜 로그인 성공 후 프론트의 특정 경로로 이동
-            response.sendRedirect("https://www.gomorebi.kro.kr/oauth2/success");
+            response.sendRedirect("http://localhost:80/auth/success");
         }
     }
 }

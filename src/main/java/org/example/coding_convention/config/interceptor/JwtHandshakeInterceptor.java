@@ -30,7 +30,7 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
             String jwt = null;
             if(cookies != null) {
                 for(Cookie cookie: httpReq.getCookies()) {
-                    if(cookie.getName().equals("SJB_AT")) {
+                    if(cookie.getName().equals("access_token")) {
                         jwt = cookie.getValue();
                         break;
                     }

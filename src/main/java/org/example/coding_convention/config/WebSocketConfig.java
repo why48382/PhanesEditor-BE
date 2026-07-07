@@ -20,7 +20,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/websocket")
                 .addInterceptors(jwtHandshakeInterceptor)
-                .setAllowedOrigins("https://www.gomorebi.kro.kr","http://localhost:5173","http://localhost:5175", "http://192.0.190.11:5173");
+                .setAllowedOrigins("http://localhost:5173", "http://localhost:80");
     }
 
     @Override

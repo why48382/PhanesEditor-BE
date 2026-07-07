@@ -54,14 +54,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String jwt = JwtUtil.generateToken(authUser.getEmail(), authUser.getIdx(), authUser.getNickname());
 
         if(jwt != null) {
-            Cookie cookie = new Cookie("SJB_AT", jwt);
+            Cookie cookie = new Cookie("access_token", jwt);
             cookie.setHttpOnly(true);
-            cookie.setSecure(true);
+//            cookie.setSecure(true);
             cookie.setPath("/");
-            cookie.setDomain("gomorebi.kro.kr");
 
             String cookieString = String.format(
-                    "%s=%s; Path=/; Domain=gomorebi.kro.kr; HttpOnly; Secure; SameSite=None",
+                    "%s=%s; Path=/; HttpOnly; SameSite=Lax",
                     cookie.getName(), cookie.getValue()
             );
             response.addHeader("Set-Cookie", cookieString);

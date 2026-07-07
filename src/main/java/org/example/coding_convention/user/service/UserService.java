@@ -102,7 +102,7 @@ public class UserService implements UserDetailsService {
         String subject = "[Phanes Editor] 가입 환영";
         String htmlContent = "<h2 style='color: #2e6c80;'>가입을 환영합니다!</h2>"
                 + "<p>아래 링크를 클릭하여 이메일 인증을 완료해주세요:</p>"
-                + "<a href='https://api.gomorebi.kro.kr/user/verify?uuid=" + uuid + "'>이메일 인증하기</a>";
+                + "<a href='http://localhost:8080/user/verify?uuid=" + uuid + "'>이메일 인증하기</a>";
         helper.setSubject(subject);
         helper.setText(htmlContent, true);
         emailSender.send(message);

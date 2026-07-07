@@ -50,9 +50,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        //configuration.setAllowedOrigins(List.of("http://localhost:5175") => 불편해서 전체경로 허용(개별용)
         configuration.setAllowedOrigins(
-                List.of("https://www.gomorebi.kro.kr", "http://localhost:5173", "http://192.0.2.108:80")
+                List.of("http://localhost:5173", "http://localhost:80")
         );
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
@@ -88,7 +87,7 @@ public class SecurityConfig {
                         ).permitAll()
 
                         // 로그인/회원가입/소셜 로그인은 허용
-                        .requestMatchers("/login", "/auth/**", "/user/signup", "/oauth2/**", "/login/oauth2/**","/user/verify").permitAll()
+                        .requestMatchers("/login", "/auth/**", "/user/signup", "/oauth2/**", "/login/oauth2/**", "/user/verify").permitAll()
 
                         // 프로젝트 검색과 상세조회는 허용
                         .requestMatchers("/project/read", "/project/search", "/file/read/**").permitAll()

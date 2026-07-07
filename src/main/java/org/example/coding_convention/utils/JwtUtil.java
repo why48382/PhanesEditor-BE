@@ -32,16 +32,20 @@ public class JwtUtil {
                 .compact();
     }
 
+//    public static void deleteToken(HttpServletResponse response) {
+//
+//        Cookie cookie = new Cookie("access_token", null);
+//        cookie.setHttpOnly(true);
+//        cookie.setSecure(true); // 로그인 때 Secure 줬다면 동일하게
+//        cookie.setPath("/");
+//        cookie.setMaxAge(0); // 즉시 만료
+//        response.addCookie(cookie);
+//
+//    }
+
     public static void deleteToken(HttpServletResponse response) {
-
-        Cookie cookie = new Cookie("SJB_AT", null);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true); // 로그인 때 Secure 줬다면 동일하게
-        cookie.setPath("/");
-        cookie.setDomain("gomorebi.kro.kr"); // 로그인 때와 동일하게
-        cookie.setMaxAge(0); // 즉시 만료
-        response.addCookie(cookie);
-
+        String cookieString = "access_token=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0";
+        response.addHeader("Set-Cookie", cookieString);
     }
 
 
