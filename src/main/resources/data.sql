@@ -1,30 +1,7 @@
--- ===============================
 -- 데이터베이스 선택
--- ===============================
--- 데이터베이스가 존재하면 삭제
-DROP
-DATABASE IF EXISTS project;
 
--- 데이터베이스 생성
-CREATE
-DATABASE project
-    CHARACTER SET utf8mb4
-    COLLATE utf8mb4_general_ci;
-
--- 데이터베이스 사용
 USE
-project;
-
--- ===============================
--- 기존 테이블 삭제 (외래키 역순)
--- ===============================
-DROP TABLE IF EXISTS email_verify;
-DROP TABLE IF EXISTS project_member;
-DROP TABLE IF EXISTS files;
-DROP TABLE IF EXISTS chat;
-DROP TABLE IF EXISTS project;
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS likes;
+phaneseditor;
 
 -- ===============================
 -- users 테이블 생성
