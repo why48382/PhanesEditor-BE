@@ -64,7 +64,6 @@ public class SecurityConfig {
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
 
         LoginFilter loginFilter = new LoginFilter(configuration.getAuthenticationManager());
-        loginFilter.setFilterProcessesUrl("/api/login"); // JWT 로그인 전용 URL
 
         http.oauth2Login(config -> {
                     config.userInfoEndpoint(
@@ -109,7 +108,7 @@ public class SecurityConfig {
         http.formLogin(AbstractHttpConfigurer::disable);
 
         http.addFilterBefore(new JwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterAt(new LoginFilter(configuration.getAuthenticationManager()), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
