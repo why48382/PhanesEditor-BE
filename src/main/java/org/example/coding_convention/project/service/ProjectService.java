@@ -38,24 +38,26 @@ public class ProjectService {
                 .build();
 
         String url = "test";
+
         Project project = projectRepository.save(dto.toEntity(url, userIdx));
 
-        Project projectIdx = Project.builder()
+        Project projectIdx = Project.builder() // TODO 이거 제거하기
                 .idx(project.getIdx())
                 .build();
 
         String status = "ADMIN";
 
         ProjectMemberDto.ProjectMemberReq memberDto = ProjectMemberDto.ProjectMemberReq.builder()
-                .projectId(projectIdx.getIdx())
+                .projectId(projectIdx.getIdx()) // 여기
                 .userId(userIdx.getIdx())
                 .status(status)
                 .build();
+
         projectMemberRepository.save(memberDto.toEntity());
         // 저장이 진짜 되었는지 검증하고 싶으면 엔티티 반환해주면 됨
         for (Integer memIdx : dto.getMemberIdx()) {
             ProjectMemberDto.ProjectMemberReq projectMembers= ProjectMemberDto.ProjectMemberReq.builder()
-                    .projectId(projectIdx.getIdx())
+                    .projectId(project.getIdx()) // 여기
                     .userId(memIdx)
                     .status("USER")
                     .build();
@@ -64,6 +66,7 @@ public class ProjectService {
         return ProjectDto.ProjectRes.from(project);
     }
 
+    // TODO 자기자신을 초대해서 프로젝트를 만들면 안됨
     public ProjectDto.ProjectRead read(Integer idx, UserDto.AuthUser authUser) {
         Optional<Project> result = projectRepository.findByProjectIdx(idx);
         if (result.isPresent()) {
