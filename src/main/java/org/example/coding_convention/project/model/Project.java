@@ -37,7 +37,7 @@ public class Project {
     private Language language;
 
     public enum Language {
-        JAVASCRIPT, JAVA, PYTHON, C
+        JAVASCRIPT, JAVA, PYTHON, C, MARKDOWN
     }
 
     public static Language projectLanguage(String language) {
