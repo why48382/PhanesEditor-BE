@@ -1,105 +1,74 @@
 # PhanesEditor Backend Project
+
 ![header](https://capsule-render.vercel.app/api?type=waving&color=0:8EC5FC,100:E0C3FC&height=200&section=header&text=Phanes%20Editor&fontSize=60&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=Real-time%20Collaboration%20on%20Code&descAlignY=60&descAlign=50)
 
-## 한 줄 요약
+## 1. 프로젝트 소개
 
-프로젝트 단위 협업을 지원하는 **웹 기반 코드 에디터 백엔드**로, 프로젝트·멤버·파일을 중심으로 **WebSocket 기반 실시간 채팅 및 코드 동기화 기능**을 구현했습니다.
+> Phanes Editor는 Spring Boot와 Vue3를 기반으로 개발한 실시간 협업 코드 에디터입니다.
 
----
+> WebSocket과 STOMP를 이용한 실시간 코드 동기화와 JWT 기반 인증을 통해 여러 사용자가 하나의 프로젝트에서 함께 개발할 수 있는 환경을 제공합니다.
 
-## 프로젝트 개요
-PhanesEditor는 여러 사용자가 하나의 프로젝트에 참여하여
-파일을 수정하고, 실시간으로 소통할 수 있는 협업형 웹 에디터입니다.
+<!-- 배포 후 경로 등록하기 --> 
 
-본 프로젝트에서 저는 **실시간 통신과 프로젝트 단위 접근 제어**를 중심으로 백엔드 핵심 기능을 담당했습니다.
+## 2. 프로젝트 정보
 
----
-
-## 담당 역할
-* **채팅(Chat)**
-* **프로젝트(Project)**
-* **프로젝트 멤버(Project Member)**
-* **파일(File)**
-* **WebSocket 기반 실시간 통신**
+| 항목    | 내용                                        |
+|-------|-------------------------------------------|
+| 개발 기간 | 2025-06-18 ~ 2025-09-23                   |
+| 개발 인원 | 2명                                        |
+| 담당 역할 | Backend, Frontend, Infra                  |
+| 기술 스택 | Spring Boot, Vue3, MariaDB, Docker, Nginx |
 
 ---
 
-## 주요 기능 및 구현 내용
+## 3. 주요 기능
 
-### WebSocket 기반 채팅
+### 👥 프로젝트 협업
+- 프로젝트 생성 및 관리
+- 프로젝트 멤버 초대 및 참여
+- 프로젝트별 독립적인 작업 공간 제공
 
-* WebSocket을 이용한 실시간 채팅 기능 구현
-* 동일 프로젝트에 참여한 멤버 간에만 메시지 송수신 가능하도록 제한
-* 프로젝트 단위 채널 구조 설계
+### 💻 실시간 코드 편집
+- 여러 사용자가 동시에 코드 편집
+- 변경 사항을 실시간으로 동기화
+- 프로젝트 참여자에게 즉시 반영
+- WebSocket 기반 실시간 통신
 
-### 실시간 코드 수정 및 저장
+### 🔐 사용자 인증
+- JWT 기반 로그인 및 인증
+- 인증된 사용자만 프로젝트 접근 가능
 
-* 프로젝트에 속한 파일을 WebSocket을 통해 실시간 수정
-* 파일 변경 사항을 서버에서 수신 후 저장 처리
-* 프로젝트 멤버가 아닌 사용자의 접근 차단
-
-### 프로젝트 및 멤버 관리
-
-* 프로젝트 생성 및 조회 기능 구현
-* 프로젝트 멤버 관리 기능 설계
-* 프로젝트 멤버 여부를 기준으로
-    * 채팅 참여
-    * 파일 열기 및 수정 권한 제어
-
----
-
-## 설계 포인트
-
-### 프로젝트 단위 접근 제어
-
-* 모든 실시간 기능은 **프로젝트 멤버 여부**를 기준으로 동작
-* WebSocket 연결 시 프로젝트 ID와 사용자 정보를 검증하여
-  비인가 사용자의 실시간 접근 차단
-* 채팅 코드수정 등 WebSocket 기능 사용시 프로젝트 맴버 여부를 검증하여 동작
-
-### WebSocket 활용 구조
-
-* HTTP 기반 CRUD와 WebSocket 기반 실시간 통신을 분리
-* 채팅과 코드 수정 이벤트를 WebSocket 메시지 타입으로 구분하여 처리
+### 📂 파일 관리
+- 파일 및 디렉터리 생성
+- 파일 수정 및 저장
+- 프로젝트 구조 관리
 
 ---
 
-## 기술 스택
+## 4. 기술 스택
 
+### frontend
+![Vue.js](https://img.shields.io/badge/Vue_3-4FC08D?style=for-the-badge&logo=vuedotjs&logoColor=white)
+![WebSocket](https://img.shields.io/badge/WebSocket-010101?style=for-the-badge&logo=socketdotio&logoColor=white)
+![STOMP](https://img.shields.io/badge/STOMP-000000?style=for-the-badge&logoColor=white)
 ### Backend
 
-* Java
-* Spring Boot
-* Spring WebSocket
-* Spring Data JPA
+![Java](https://img.shields.io/badge/Java_17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot_3.5.6-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
+![Spring Security](https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white)
+![JPA](https://img.shields.io/badge/Spring_Data_JPA-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
 
-### Database
+### infra
 
-* mariadb (프로젝트 / 멤버 / 파일 관리)
-
----
-
-## API 및 통신 구조
-
-* REST API: 프로젝트, 멤버, 파일 관리
-* WebSocket: 채팅 메시지 및 코드 변경 이벤트 처리
+![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Nginx](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)
 
 ---
 
-## 정리
+## 5. 시스템 아키텍처
+![아키텍처 이미지](assets/Architecture/Architecture.png)
+<!-- 이미지 변경 필요 -->
 
-* 프로젝트 단위 협업 구조 설계 경험
-* WebSocket을 활용한 실시간 기능 구현 경험
-* 접근 제어를 고려한 실시간 통신 처리
-
-### 🏗️ 시스템 아키텍처
-![시스템 아키텍처](./assets/architecture/system-architecture.png)
-
-### 🧩 소프트웨어 아키텍처
-![소프트웨어 아키텍처](./assets/architecture/software-architecture.png)
-
----
-
-
-
+## 6. 스크린 샷
 
