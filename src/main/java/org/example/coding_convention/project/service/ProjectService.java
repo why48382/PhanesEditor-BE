@@ -1,5 +1,6 @@
 package org.example.coding_convention.project.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.coding_convention.project.model.Project;
 import org.example.coding_convention.project.model.ProjectDto;
@@ -32,7 +33,8 @@ public class ProjectService {
         // result.stream().map(ProjectDto.ProjectSearchRes::from).toList();
     }
 
-    // TODO 자기자신을 초대해서 프로젝트를 만들면 안됨
+    // TODO 생성될때 자기자신을 맴버로 넣은뒤 또 넣는 경우가 없게 해야함
+    @Transactional
     public ProjectDto.ProjectRes save(ProjectDto.ProjectReq dto, UserDto.AuthUser authUser) {
         User userIdx = User.builder()
                 .idx(authUser.getIdx())
@@ -41,15 +43,10 @@ public class ProjectService {
         String url = "test";
 
         Project project = projectRepository.save(dto.toEntity(url, userIdx));
-
-        Project projectIdx = Project.builder() // TODO 이거 제거하기
-                .idx(project.getIdx())
-                .build();
-
         String status = "ADMIN";
 
         ProjectMemberDto.ProjectMemberReq memberDto = ProjectMemberDto.ProjectMemberReq.builder()
-                .projectId(projectIdx.getIdx()) // 여기
+                .projectId(project.getIdx())
                 .userId(userIdx.getIdx())
                 .status(status)
                 .build();
@@ -63,6 +60,8 @@ public class ProjectService {
                     .status("USER")
                     .build();
             projectMemberRepository.save(projectMembers.toEntity());
+            // 파일을 저장하는 로직을 생성하자
+
         }
         return ProjectDto.ProjectRes.from(project);
     }
