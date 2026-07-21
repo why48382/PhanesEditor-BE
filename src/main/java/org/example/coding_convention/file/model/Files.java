@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Table(
         name = "files",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"file_name", "file_path"})
+                @UniqueConstraint(columnNames = {"project_idx", "file_name", "file_path" })
         }
 )
 @EntityListeners(AuditingEntityListener.class)
@@ -34,7 +34,7 @@ public class Files {
     @Column(name = "file_path", length = 500)
     private String path;
 
-    @Column(name = "URL", length = 500 )
+    @Column(name = "URL", length = 500)
     private String URL;
 
     @CreatedDate
