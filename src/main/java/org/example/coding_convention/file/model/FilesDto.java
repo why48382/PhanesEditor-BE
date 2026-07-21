@@ -68,10 +68,10 @@ public class FilesDto {
         private Integer idx;
 
         @NotBlank(message = "파일 이름은 비어있을 수 없습니다.")
-        @Pattern(
-                regexp = "^[a-zA-Z0-9._-]+$",
-                message = "파일 이름에는 /, \\, :, *, ?, \", <, >, | 같은 특수문자를 사용할 수 없습니다."
-        )
+//        @Pattern(
+//                regexp = "^[a-zA-Z0-9._-]+$",
+//                message = "파일 이름에는 /, \\, :, *, ?, \", <, >, | 같은 특수문자를 사용할 수 없습니다."
+//        )
         @Schema(description = "파일 이름 작성", example = "show.txt")
         private String name;
         @Schema(description = "파일에 대한 간단한 설명", example = "코테연습")
