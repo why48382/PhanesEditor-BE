@@ -115,7 +115,7 @@ CREATE TABLE chats
 INSERT INTO users (email, nickname, password, created_at, updated_at, platform, status, enabled)
 VALUES ('admin@example.com', '관리자', '$2a$10$FWWMVBtbwDoYlxAdue1rV.pf8EKxbmQ.E9fj1.pQfkmfmddSzZe6m', NOW(), NOW(),
         'LOCAL', 'ACTIVE', true),
-       ('user1@example.com', '유저1', '$2a$10$FWWMVBtbwDoYlxAdue1rV.pf8EKxbmQ.E9fj1.pQfkmfmddSzZe6m', NOW(), NOW(),
+       ('test', 'test', '$2a$10$FWWMVBtbwDoYlxAdue1rV.pf8EKxbmQ.E9fj1.pQfkmfmddSzZe6m', NOW(), NOW(),
         'LOCAL', 'ACTIVE', true),
        ('user2@example.com', '유저2', '$2a$10$FWWMVBtbwDoYlxAdue1rV.pf8EKxbmQ.E9fj1.pQfkmfmddSzZe6m', NOW(), NOW(),
         'LOCAL', 'ACTIVE', true),
@@ -217,7 +217,7 @@ VALUES (1, 1),
 INSERT INTO files (file_name, file_path, URL, created_at, type, save_time_at, project_idx)
 VALUES
     -- 루트 디렉토리의 프로젝트 폴더들 (URL: NULL)
-    ('project_a', '/', NULL, NOW(), 'DIRECTORY', NOW(), 1),
+    ('project_a', 'https://20250711phaneseditorlee.s3.ap-northeast-2.amazonaws.com/project_a/index.js', NULL, NOW(), 'DIRECTORY', NOW(), 1),
     ('project_b', '/', NULL, NOW(), 'DIRECTORY', NOW(), 2),
     ('project_c', '/', NULL, NOW(), 'DIRECTORY', NOW(), 3),
 
