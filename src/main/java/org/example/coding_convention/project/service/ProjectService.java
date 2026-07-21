@@ -32,6 +32,7 @@ public class ProjectService {
         // result.stream().map(ProjectDto.ProjectSearchRes::from).toList();
     }
 
+    // TODO 자기자신을 초대해서 프로젝트를 만들면 안됨
     public ProjectDto.ProjectRes save(ProjectDto.ProjectReq dto, UserDto.AuthUser authUser) {
         User userIdx = User.builder()
                 .idx(authUser.getIdx())
@@ -66,7 +67,6 @@ public class ProjectService {
         return ProjectDto.ProjectRes.from(project);
     }
 
-    // TODO 자기자신을 초대해서 프로젝트를 만들면 안됨
     public ProjectDto.ProjectRead read(Integer idx, UserDto.AuthUser authUser) {
         Optional<Project> result = projectRepository.findByProjectIdx(idx);
         if (result.isPresent()) {
