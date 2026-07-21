@@ -15,6 +15,7 @@ import org.example.coding_convention.common.response.BaseResponse;
 import org.example.coding_convention.user.model.UserDto;
 import org.example.coding_convention.user.service.UserService;
 import org.example.coding_convention.utils.JwtUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +27,12 @@ import java.util.List;
 @RequestMapping("/user")
 @Tag(name = "User", description = "회원 관련 API")
 public class UserController {
+    @Value("${cookie.secure}")
+    private boolean cookieSecure;
+    @Value("${cookie.same-site}")
+    private String cookieSameSite;
+    @Value("${cookie.domain}")
+    private String cookieDomain;
     private final UserService userService;
 
     @Operation(
@@ -42,12 +49,12 @@ public class UserController {
                             examples = @ExampleObject(
                                     name = "회원가입 성공 예시",
                                     value = """
-                {
-                  "success": true,
-                  "message": "요청에 성공했습니다.",
-                  "results": "이메일 인증요망"
-                }
-                """
+                                            {
+                                              "success": true,
+                                              "message": "요청에 성공했습니다.",
+                                              "results": "이메일 인증요망"
+                                            }
+                                            """
                             )
                     )
             )
@@ -62,7 +69,7 @@ public class UserController {
     @Operation(
             summary = "프로필 조회",
             description = "로그인한 사용자의 프로필 정보를 조회합니다.",
-            security = { @SecurityRequirement(name = "bearerAuth") }
+            security = {@SecurityRequirement(name = "bearerAuth")}
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "프로필 조회 성공",
@@ -79,7 +86,7 @@ public class UserController {
     @Operation(
             summary = "프로필 이미지 업로드",
             description = "사용자의 프로필 이미지를 업로드/변경합니다.",
-            security = { @SecurityRequirement(name = "bearerAuth") }
+            security = {@SecurityRequirement(name = "bearerAuth")}
     )
     @PostMapping("/usr_mypage/image")
     public BaseResponse uploadProfileImage(
@@ -106,8 +113,8 @@ public class UserController {
             description = "클라이언트의 토큰을 제거"
     )
     @PostMapping("/logout")
-    public BaseResponse logout(HttpServletResponse response) {
-        JwtUtil.deleteToken(response);
+    public BaseResponse<String> logout(HttpServletResponse response) {
+        JwtUtil.deleteToken(response, cookieSecure, cookieSameSite, cookieDomain);
         return BaseResponse.success("로그아웃 완료");
     }
 

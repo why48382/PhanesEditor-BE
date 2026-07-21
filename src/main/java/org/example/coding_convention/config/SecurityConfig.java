@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.coding_convention.config.filter.JwtAuthFilter;
 import org.example.coding_convention.config.filter.LoginFilter;
 import org.example.coding_convention.config.oauth.OAuth2AuthenticationSuccessHandler;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
@@ -24,6 +25,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -31,6 +33,14 @@ import java.util.List;
 @EnableWebSecurity
 @EnableJpaAuditing
 public class SecurityConfig {
+    @Value("${cors.allowed.origins}")
+    private String allowedOrigins;
+    @Value("${cookie.secure}")
+    private boolean cookieSecure;
+    @Value("${cookie.same-site}")
+    private String cookieSameSite;
+    @Value("${cookie.domain}")
+    private String cookieDomain;
     private final AuthenticationConfiguration configuration;
     private final OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
@@ -51,7 +61,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
         configuration.setAllowedOrigins(
-                List.of("http://localhost:5173", "http://localhost:80")
+                Arrays.asList(allowedOrigins.split("\\s*,\\s*"))
         );
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
@@ -63,7 +73,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
 
-        LoginFilter loginFilter = new LoginFilter(configuration.getAuthenticationManager());
+        LoginFilter loginFilter = new LoginFilter(configuration.getAuthenticationManager(), cookieSecure, cookieSameSite, cookieDomain);
 
         http.oauth2Login(config -> {
                     config.userInfoEndpoint(
@@ -97,7 +107,7 @@ public class SecurityConfig {
                         .requestMatchers("/user/verify").permitAll()
 
                         // 나머지 모든 요청은 인증 필요
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
         );
 
         http.cors(cors ->

@@ -30,6 +30,8 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
+    @Value("${mail.backend-url}")
+    private String mailBackendUrl;
     private final S3Template s3Template;
     @Value("${spring.cloud.aws.s3.bucket}")
     private String bucketName;
@@ -73,13 +75,11 @@ public class UserService implements UserDetailsService {
     }
 
 
-
-
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<User> result = userRepository.findByEmail(email);
 
-        if(result.isPresent()) {
+        if (result.isPresent()) {
             User user = result.get();
             return UserDto.AuthUser.from(user);
         }
@@ -102,13 +102,13 @@ public class UserService implements UserDetailsService {
         String subject = "[Phanes Editor] 가입 환영";
         String htmlContent = "<h2 style='color: #2e6c80;'>가입을 환영합니다!</h2>"
                 + "<p>아래 링크를 클릭하여 이메일 인증을 완료해주세요:</p>"
-                + "<a href='http://localhost:8080/user/verify?uuid=" + uuid + "'>이메일 인증하기</a>";
+                + "<a href='" + mailBackendUrl + "/user/verify?uuid=" + uuid + "'>이메일 인증하기</a>";
         helper.setSubject(subject);
         helper.setText(htmlContent, true);
         emailSender.send(message);
 
         // 랜덤한 값을 DB에 저장
-        EmailVerify emailVerify= EmailVerify.builder()
+        EmailVerify emailVerify = EmailVerify.builder()
                 .uuid(uuid)
                 .user(user)
                 .build();
@@ -118,7 +118,7 @@ public class UserService implements UserDetailsService {
     public void verify(String uuid) {
         Optional<EmailVerify> result = emailVerifyRepository.findByUuid(uuid);
 
-        if(result.isPresent()) {
+        if (result.isPresent()) {
             EmailVerify emailVerify = result.get();
             User user = emailVerify.getUser();
             user.userVerify();

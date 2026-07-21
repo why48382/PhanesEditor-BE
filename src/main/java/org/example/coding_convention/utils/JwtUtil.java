@@ -34,20 +34,17 @@ public class JwtUtil {
                 .compact();
     }
 
-//    public static void deleteToken(HttpServletResponse response) {
-//
-//        Cookie cookie = new Cookie("access_token", null);
-//        cookie.setHttpOnly(true);
-//        cookie.setSecure(true); // 로그인 때 Secure 줬다면 동일하게
-//        cookie.setPath("/");
-//        cookie.setMaxAge(0); // 즉시 만료
-//        response.addCookie(cookie);
-//
-//    }
-
-    public static void deleteToken(HttpServletResponse response) {
-        String cookieString = "access_token=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0";
-        response.addHeader("Set-Cookie", cookieString);
+    public static void deleteToken(HttpServletResponse response, boolean cookieSecure, String cookieSameSite, String cookieDomain) {
+        StringBuilder cookieString = new StringBuilder()
+                .append("access_token=; Path=/; HttpOnly; SameSite=").append(cookieSameSite)
+                .append("; Max-Age=0");
+        if (cookieSecure) {
+            cookieString.append("; Secure");
+        }
+        if (cookieDomain != null && !cookieDomain.isBlank()) {
+            cookieString.append("; Domain=").append(cookieDomain);
+        }
+        response.addHeader("Set-Cookie", cookieString.toString());
     }
 
 
