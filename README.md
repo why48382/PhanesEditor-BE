@@ -10,14 +10,21 @@
 
 <!-- 배포 후 경로 등록하기 --> 
 
+### 링크
+[PhanesEditor 바로가기](https://www.phaneseditor.site/)
+
+테스트 아이디  
+ID: test  
+PASSWORD: 1234
+
 ## 2. 프로젝트 정보
 
-| 항목    | 내용                                        |
-|-------|-------------------------------------------|
-| 개발 기간 | 2025-06-18 ~ 2025-09-23                   |
-| 개발 인원 | 2명                                        |
-| 담당 역할 | Backend, Frontend, Infra                  |
-| 기술 스택 | Spring Boot, Vue3, MariaDB, Docker, Nginx |
+| 항목           | 내용                                        |
+|----------------|-------------------------------------------|
+| 개발 기간      | 2025-06-18 ~ 2025-09-23                   |
+| 개발 인원      | 2명                                        |
+| 담당 역할      | Backend, Frontend, Infra                  |
+| 주요 기술 스택 | Spring Boot, Vue3, MariaDB, Docker, Nginx |
 
 ## 3. 주요 기능
 
