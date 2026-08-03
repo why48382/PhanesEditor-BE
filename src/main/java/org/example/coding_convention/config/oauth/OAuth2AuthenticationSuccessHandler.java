@@ -1,6 +1,5 @@
 package org.example.coding_convention.config.oauth;
 
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

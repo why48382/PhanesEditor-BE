@@ -2,10 +2,10 @@ package org.example.coding_convention.config;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-
 import org.example.coding_convention.config.filter.JwtAuthFilter;
 import org.example.coding_convention.config.filter.LoginFilter;
 import org.example.coding_convention.config.oauth.OAuth2AuthenticationSuccessHandler;
+import org.example.coding_convention.user.service.CustomOAuth2UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,9 +17,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -43,7 +40,7 @@ public class SecurityConfig {
     @Value("${cookie.domain}")
     private String cookieDomain;
     private final AuthenticationConfiguration configuration;
-    private final OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService;
+    private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
     @Bean
@@ -79,7 +76,7 @@ public class SecurityConfig {
         http.oauth2Login(config -> {
                     config.userInfoEndpoint(
                             endpoint ->
-                                    endpoint.userService(oAuth2UserService)
+                                    endpoint.userService(customOAuth2UserService)
                     );
                     config.successHandler(oAuth2AuthenticationSuccessHandler);
                 }

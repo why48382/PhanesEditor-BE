@@ -1,6 +1,5 @@
 package org.example.coding_convention.user.service;
 
-
 import lombok.RequiredArgsConstructor;
 import org.example.coding_convention.user.model.User;
 import org.example.coding_convention.user.model.UserDto;
@@ -28,13 +27,18 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Map properties = ((Map) attributes.get("properties"));
         String name = (String) properties.get("nickname");
         String kakaoId = attributes.get("id").toString();
+        User.Platform platform = User.Platform.KAKAO;
 
         Optional<User> socialUserResult =
                 userRepository.findByEmail(kakaoId);
         User user;
         if (!socialUserResult.isPresent()) {
             user = userRepository.save(
-                    User.builder().nickname(name).email(kakaoId).password("null방지용")
+                    User.builder()
+                            .nickname(name)
+                            .email(kakaoId)
+                            .password("null방지용")
+                            .platform(platform)
                             .build()
             );
         } else {
