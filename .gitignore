@@ -41,5 +41,9 @@ out/
 
 ### 환경 변수 ###
 .env
+.env.*
+
+### 임시 파일 ###
+*.zip
 
 /src/main/resources/application.yml
