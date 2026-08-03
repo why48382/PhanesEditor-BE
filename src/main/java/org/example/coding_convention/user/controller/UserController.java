@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.coding_convention.common.response.BaseResponse;
 import org.example.coding_convention.user.model.UserDto;
 import org.example.coding_convention.user.service.UserService;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
@@ -88,13 +90,13 @@ public class UserController {
             description = "사용자의 프로필 이미지를 업로드/변경합니다.",
             security = {@SecurityRequirement(name = "bearerAuth")}
     )
-    @PostMapping("/usr_mypage/image")
-    public BaseResponse uploadProfileImage(
-            @RequestParam("profileImage") MultipartFile file,
+    @PostMapping("/usr_mypage/update")
+    public BaseResponse<UserDto.UpdateProfile> uploadProfileUpdate(
+            @RequestParam(value = "profileImage", required = false) MultipartFile file,
+            @RequestParam(value = "nickname", required = false) String nickname,
             @AuthenticationPrincipal UserDto.AuthUser authUser) {
-
-        String imagePath = userService.updateImage(file, authUser);
-        return BaseResponse.success(imagePath);
+        UserDto.UpdateProfile response = userService.updateProfile(file, authUser, nickname);
+        return BaseResponse.success(response);
     }
 
     @Operation(

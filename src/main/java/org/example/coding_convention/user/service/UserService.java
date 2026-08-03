@@ -32,9 +32,9 @@ import java.util.UUID;
 public class UserService implements UserDetailsService {
     @Value("${mail.backend-url}")
     private String mailBackendUrl;
-    private final S3Template s3Template;
     @Value("${spring.cloud.aws.s3.bucket}")
     private String bucketName;
+    private final S3Template s3Template;
     private final UserRepository userRepository;
     private final JavaMailSender emailSender;
     private final EmailVerifyRepository emailVerifyRepository;
@@ -50,30 +50,36 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public String updateImage(MultipartFile file, UserDto.AuthUser authUser) {
+    public UserDto.UpdateProfile updateProfile(MultipartFile file, UserDto.AuthUser authUser, String nickname) {
         User user = userRepository.findById(authUser.getIdx())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        try {
-            // S3에 업로드 (InputStream 업로드)
-            String key = "profiles/" + authUser.getIdx() + "/"
-                    + UUID.randomUUID() + "_" + file.getOriginalFilename();
+        if (file != null && !file.isEmpty()) {
+            String contentType = file.getContentType();
+            if (contentType == null || !contentType.startsWith("image/")) {
+                throw new IllegalArgumentException("이미지 파일만 업로드할 수 있습니다.");
+            }
+            try {
+                String key = "profiles/" + authUser.getIdx() + "/"
+                        + UUID.randomUUID() + "_" + file.getOriginalFilename();
 
-            s3Template.upload(bucketName, key, file.getInputStream());
+                s3Template.upload(bucketName, key, file.getInputStream());
 
-            // 업로드된 객체 URL 만들기
-            String imageUrl = String.format("https://%s.s3.%s.amazonaws.com/%s",
-                    bucketName, "ap-northeast-2", key);
+                String imageUrl = String.format("https://%s.s3.%s.amazonaws.com/%s",
+                        bucketName, "ap-northeast-2", key);
 
-            // DB에 저장
-            user.setProfileImg(imageUrl);
-
-            return imageUrl;
-        } catch (IOException e) {
-            throw new RuntimeException("이미지 업로드 실패", e);
+                user.setProfileImg(imageUrl);
+            } catch (IOException e) {
+                throw new RuntimeException("이미지 업로드 실패", e);
+            }
         }
-    }
 
+        if (nickname != null && !nickname.isBlank()) {
+            user.setNickname(nickname);
+        }
+
+        return UserDto.UpdateProfile.from(user);
+    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -85,7 +91,6 @@ public class UserService implements UserDetailsService {
         }
         return null;
     }
-
 
     public void signup(UserDto.Register dto) throws MessagingException {
         User user = dto.toEntity();

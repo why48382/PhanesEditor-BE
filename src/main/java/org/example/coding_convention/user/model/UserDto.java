@@ -57,7 +57,9 @@ public class UserDto {
         }
 
         @Override
-        public boolean isEnabled() {return enabled;}
+        public boolean isEnabled() {
+            return enabled;
+        }
 
         @Override
         public Map<String, Object> getAttributes() {
@@ -152,6 +154,20 @@ public class UserDto {
             return UserSearch.builder()
                     .idx(entity.getIdx())
                     .nickname(entity.getNickname())
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    public static class UpdateProfile {
+        private String nickname;
+        private String profileImg;
+
+        public static UpdateProfile from(User entity) {
+            return UpdateProfile.builder()
+                    .nickname(entity.getNickname())
+                    .profileImg(entity.getProfileImg())
                     .build();
         }
     }
