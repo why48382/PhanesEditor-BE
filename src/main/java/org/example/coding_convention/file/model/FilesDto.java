@@ -66,6 +66,7 @@ public class FilesDto {
     public static class Register {
         @Schema(description = "프로젝트 id 자동 주입", example = "1")
         private Integer idx;
+//        private Integer projectIdx;
 
         @NotBlank(message = "파일 이름은 비어있을 수 없습니다.")
 //        @Pattern(
@@ -82,23 +83,21 @@ public class FilesDto {
 
         public Files toEntity(String filetype, String URL) {
 
-
             Project project = Project.builder()
                     .idx(idx)
                     .build();
 
             if(this.fileIdx == null) {
-                Files entity = Files.builder()
+                return Files.builder()
                         .project(project)
                         .name(this.name)
                         .URL(URL)
                         .path(URL.replaceAll(".*\\.com/", ""))
                         .type(Files.setFileType(filetype))
                         .build();
-                return entity;
             }
 
-            Files entity = Files.builder()
+            return Files.builder()
                     .idx(fileIdx)
                     .project(project)
                     .name(this.name)
@@ -106,20 +105,8 @@ public class FilesDto {
                     .path(URL.replaceAll(".*\\.com/", ""))
                     .type(Files.setFileType(filetype))
                     .build();
-
-            return entity;
         }
     }
-
-//    public static class FileUpload {
-//        private String fileName;
-//        private String fileContents;
-//        private Integer projectId;
-//
-//        public Files toEntity(String filetype, String URL) {
-//
-//        }
-//    }
 
     @Getter
     @Builder

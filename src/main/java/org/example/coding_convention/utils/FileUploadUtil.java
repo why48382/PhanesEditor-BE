@@ -18,4 +18,8 @@ public class FileUploadUtil {
         }
         return date + "/" + UUID.randomUUID() + "_";
     }
+
+    public static String makeProjectFilePath(Integer projectIdx) {
+        return "projects/" + projectIdx + "/" + UUID.randomUUID() + "_";
+    }
 }

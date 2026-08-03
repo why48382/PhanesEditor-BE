@@ -156,7 +156,7 @@ public class ProjectDto {
         private ProjectMember projectMember;
 
         public ProjectDto.ProjectAndMember from(Project entity, ProjectMember member) {
-             ProjectMember projectMember1 = ProjectMember.builder()
+            ProjectMember projectMember1 = ProjectMember.builder()
                     .idx(member.getIdx())
                     .status(member.getStatus())
                     .user(member.getUser())

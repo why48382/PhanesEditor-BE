@@ -14,6 +14,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 @Tag(name = "프로젝트")
@@ -28,7 +30,7 @@ public class ProjectController {
             description = "프로젝트의 이름, 설명 등을 담은 프로젝트가 생성됩니다."
     )
     @PostMapping("/create")
-    public BaseResponse<ProjectDto.ProjectRes> projectCreate(@RequestBody ProjectDto.ProjectReq dto, @AuthenticationPrincipal UserDto.AuthUser authUser) {
+    public BaseResponse<ProjectDto.ProjectRes> projectCreate(@RequestBody ProjectDto.ProjectReq dto, @AuthenticationPrincipal UserDto.AuthUser authUser) throws SQLException, IOException {
         ProjectDto.ProjectRes result = projectService.save(dto, authUser);
         return BaseResponse.success(result);
     }

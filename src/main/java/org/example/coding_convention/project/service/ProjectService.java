@@ -2,6 +2,7 @@ package org.example.coding_convention.project.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.example.coding_convention.file.service.FileService;
 import org.example.coding_convention.project.model.Project;
 import org.example.coding_convention.project.model.ProjectDto;
 import org.example.coding_convention.project.repository.ProjectQueryRepository;
@@ -15,6 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +27,7 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final ProjectMemberRepository projectMemberRepository;
     private final ProjectQueryRepository projectQueryRepository;
+    private final FileService fileService;
 
 
     public Page<ProjectDto.ProjectSearchRes> search(String projectName, String email, String language, Pageable pageable) {
@@ -35,7 +39,7 @@ public class ProjectService {
 
     // TODO 생성될때 자기자신을 맴버로 넣은뒤 또 넣는 경우가 없게 해야함
     @Transactional
-    public ProjectDto.ProjectRes save(ProjectDto.ProjectReq dto, UserDto.AuthUser authUser) {
+    public ProjectDto.ProjectRes save(ProjectDto.ProjectReq dto, UserDto.AuthUser authUser) throws SQLException, IOException {
         User userIdx = User.builder()
                 .idx(authUser.getIdx())
                 .build();
@@ -52,17 +56,17 @@ public class ProjectService {
                 .build();
 
         projectMemberRepository.save(memberDto.toEntity());
+        fileService.createDefaultFile(project);
         // 저장이 진짜 되었는지 검증하고 싶으면 엔티티 반환해주면 됨
         for (Integer memIdx : dto.getMemberIdx()) {
-            ProjectMemberDto.ProjectMemberReq projectMembers= ProjectMemberDto.ProjectMemberReq.builder()
+            ProjectMemberDto.ProjectMemberReq projectMembers = ProjectMemberDto.ProjectMemberReq.builder()
                     .projectId(project.getIdx()) // 여기
                     .userId(memIdx)
                     .status("USER")
                     .build();
             projectMemberRepository.save(projectMembers.toEntity());
-            // 파일을 저장하는 로직을 생성하자
-
         }
+
         return ProjectDto.ProjectRes.from(project);
     }
 

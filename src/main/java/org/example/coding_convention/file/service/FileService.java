@@ -42,7 +42,7 @@ public class FileService {
         Files entity = fileRepository.findByPath(req.getFileName()).orElseThrow(() -> new IllegalArgumentException("File not found"));
 
         String url = entity.getURL();
-        if(url == null || url.isEmpty()) {
+        if (url == null || url.isEmpty()) {
             throw new IllegalArgumentException("이 파일은 URL이 등록되어 있지 않습니다");
         }
 
@@ -66,7 +66,7 @@ public class FileService {
 
     public void save(FilesDto.Register dto) throws SQLException, IOException {
 
-        String URL = s3UploadService.upload(dto.getName(), dto.getContents());
+        String URL = s3UploadService.upload(dto.getIdx(), dto.getName(), dto.getContents());
 
         String dtoName = dto.getName();
         if (dtoName.contains(".")) {
@@ -82,7 +82,7 @@ public class FileService {
 
     public FilesDto.FilesRes read(Integer idx) {
         Optional<Files> result = fileRepository.findById(idx);
-        if(result.isPresent()) {
+        if (result.isPresent()) {
 
             Files entity = result.get();
             return FilesDto.FilesRes.from(entity);
@@ -154,7 +154,8 @@ public class FileService {
     }
 
     // s3://bucket/key 전용
-    private record S3Location(String bucket, String key) {}
+    private record S3Location(String bucket, String key) {
+    }
 
     private S3Location parseS3Uri(String uri) {
         if (uri == null || !uri.startsWith("s3://")) {
@@ -168,4 +169,42 @@ public class FileService {
         return new S3Location(rest.substring(0, slash), rest.substring(slash + 1));
     }
 
+    @Transactional
+    public void createDefaultFile(Project project) throws SQLException, IOException {
+        String fileName = defaultFileName(project.getLanguage());
+        String contents = defaultFileContent(project.getLanguage(), project.getProjectName());
+
+        String url = s3UploadService.upload(project.getIdx(), fileName, contents);
+
+        Files entity = Files.builder()
+                .project(project)
+                .name(fileName)
+                .URL(url)
+                .path(url.replaceAll(".*\\.com/", ""))
+                .type(Files.FileType.FILE)
+                .build();
+
+        fileRepository.save(entity);
+    }
+
+    private String defaultFileName(Project.Language language) {
+        String ext = switch (language) {
+            case JAVASCRIPT -> "js";
+            case JAVA -> "java";
+            case PYTHON -> "py";
+            case C -> "c";
+            case MARKDOWN -> "md";
+        };
+        return "Main." + ext;
+    }
+
+    private String defaultFileContent(Project.Language language, String projectName) {
+        return switch (language) {
+            case JAVA -> "public class Main {\n    public static void main(String[] args) {\n\n    }\n}\n";
+            case C -> "#include <stdio.h>\n\nint main() {\n    return 0;\n}\n";
+            case JAVASCRIPT -> "console.log(\"Hello, " + projectName + "!\");\n";
+            case PYTHON -> "print(\"Hello, " + projectName + "!\")\n";
+            case MARKDOWN -> "# " + projectName + "\n";
+        };
+    }
 }
