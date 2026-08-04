@@ -17,4 +17,6 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, In
             "JOIN FETCH p.user " +
             "WHERE pm.user.idx = :userId")
     List<ProjectMember> findByProjectList(@Param("userId") Integer userId);
+
+    boolean existsByProject_IdxAndUser_Idx(Integer projectId, Integer userId);
 }

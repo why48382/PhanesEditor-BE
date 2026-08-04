@@ -49,6 +49,10 @@ public class Files {
     @Column(nullable = false)
     private LocalDateTime saveTimeAt;
 
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean deleted = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_idx")
     Project project;
@@ -57,6 +61,9 @@ public class Files {
         return FileType.valueOf(type);
     }
 
+    public void delete() {
+        this.deleted = true;
+    }
 
     public enum FileType {
         DIRECTORY,    // 필요한 타입으로 변경

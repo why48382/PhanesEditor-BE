@@ -5,7 +5,7 @@ import org.example.coding_convention.file.model.Files;
 import org.example.coding_convention.file.model.FilesDto;
 import org.example.coding_convention.file.repository.FileRepository;
 import org.example.coding_convention.project.model.Project;
-import org.example.coding_convention.user.model.User;
+import org.example.coding_convention.project_member.repository.ProjectMemberRepository;
 import org.example.coding_convention.user.model.UserDto;
 import org.example.coding_convention.user.repository.UserRepository;
 import org.example.coding_convention.utils.S3UrlUtils;
@@ -17,7 +17,6 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.model.S3Location;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,6 +25,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +36,7 @@ public class FileService {
     private final UserRepository userRepository;
     private final S3UploadService s3UploadService;
     private final S3Client s3Client; //S3 사용을 위한 객체 추가
+    private final ProjectMemberRepository projectMemberRepository;
 
     @Transactional
     public void updateContent(FilesDto.ContentUpdateReq req) {
@@ -76,8 +77,6 @@ public class FileService {
             String fileType = "DIRECTORY";
             fileRepository.save(dto.toEntity(fileType, URL));
         }
-
-
     }
 
     public FilesDto.FilesRes read(Integer idx) {
@@ -92,39 +91,12 @@ public class FileService {
 
     @Transactional(readOnly = true)
     public FilesDto.FileContentRes readContentByIdx(Integer idx, UserDto.AuthUser authUser) {
-//        // 현재 로그인 한 사용자가 이 파일에 대한 권한이 있는지 확인
-//        Integer userIdx = authUser.getIdx();
-//        User user = userRepository.findById(userIdx)
-//                .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다. idx=" + userIdx));
-//
-//        // 해당 사용자의 프로젝트들의 파일을 확인
-//        boolean isHave = false;
-//        for (Project project : user.getProjectList()) {
-//            for (Files file : project.getFileList()) {
-//                if (file.getIdx().equals(idx)) {
-//                    isHave = true;
-//                    break; // 찾으면 루프 종료
-//                }
-//            }
-//            if (isHave) break;
-//        }
-//
-//        // 권한 없으면 바로 예외 처리
-//        if (!isHave) {
-//            throw new IllegalArgumentException("해당 파일에 접근 권한이 없습니다. fileIdx=" + idx);
-//        }
-
-        // 권한이 있는 경우에만 파일 엔티티 조회
         Files entity = fileRepository.findById(idx)
                 .orElseThrow(() -> new IllegalArgumentException("파일을 찾을 수 없습니다. idx=" + idx));
-
         String uri = entity.getURL();
-
         try {
             String contents;
-
             if (uri.startsWith("s3://")) {
-                // S3 URI -> SDK로 읽기
                 S3Location loc = parseS3Uri(uri);
                 try (ResponseInputStream<GetObjectResponse> is = s3Client.getObject(
                         GetObjectRequest.builder()
@@ -135,7 +107,6 @@ public class FileService {
                     contents = new String(is.readAllBytes(), StandardCharsets.UTF_8);
                 }
             } else if (uri.startsWith("http://") || uri.startsWith("https://")) {
-                // 퍼블릭/프리사인드 URL -> HTTP로 바로 읽기
                 URL url = new URL(uri);
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
                     StringBuilder sb = new StringBuilder();
@@ -146,27 +117,35 @@ public class FileService {
             } else {
                 throw new IllegalArgumentException("지원하지 않는 URI 스킴: " + uri);
             }
-
             return FilesDto.FileContentRes.of(entity, contents);
         } catch (IOException e) {
             throw new RuntimeException("파일 읽기 실패: " + uri, e);
         }
     }
 
-    // s3://bucket/key 전용
-    private record S3Location(String bucket, String key) {
-    }
 
-    private S3Location parseS3Uri(String uri) {
-        if (uri == null || !uri.startsWith("s3://")) {
-            throw new IllegalArgumentException("유효한 S3 URI가 아닙니다: " + uri);
+    @Transactional
+    public void deleteFile(Integer fileIdx, UserDto.AuthUser authUser) {
+        Files file = fileRepository.findById(fileIdx)
+                .orElseThrow(() -> new IllegalArgumentException("파일을 찾을 수 없습니다."));
+
+        boolean isMember = projectMemberRepository.existsByProject_IdxAndUser_Idx(
+                file.getProject().getIdx(), authUser.getIdx());
+
+        if (!isMember) {
+            throw new RuntimeException("해당 프로젝트의 멤버만 파일을 삭제할 수 있습니다.");
         }
-        String rest = uri.substring(5); // "bucket/key..."
-        int slash = rest.indexOf('/');
-        if (slash <= 0 || slash == rest.length() - 1) {
-            throw new IllegalArgumentException("S3 URI 파싱 실패: " + uri);
+
+        renameForDelete(file);
+        fileRepository.save(file);
+
+        if (file.getType() == Files.FileType.DIRECTORY) {
+            String prefix = file.getPath() + "/";
+            List<Files> children = fileRepository.findByProject_IdxAndPathStartingWithAndDeletedFalse(
+                    file.getProject().getIdx(), prefix);
+            children.forEach(this::renameForDelete);
+            fileRepository.saveAll(children);
         }
-        return new S3Location(rest.substring(0, slash), rest.substring(slash + 1));
     }
 
     @Transactional
@@ -185,6 +164,12 @@ public class FileService {
                 .build();
 
         fileRepository.save(entity);
+    }
+
+    private void renameForDelete(Files file) {
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHH"));
+        file.setName(file.getName() + "_deleted_" + timestamp + "_" + file.getIdx());
+        file.setDeleted(true);
     }
 
     private String defaultFileName(Project.Language language) {
@@ -207,4 +192,20 @@ public class FileService {
             case MARKDOWN -> "# " + projectName + "\n";
         };
     }
+
+    private record S3Location(String bucket, String key) {
+    }
+
+    private S3Location parseS3Uri(String uri) {
+        if (uri == null || !uri.startsWith("s3://")) {
+            throw new IllegalArgumentException("유효한 S3 URI가 아닙니다: " + uri);
+        }
+        String rest = uri.substring(5); // "bucket/key..."
+        int slash = rest.indexOf('/');
+        if (slash <= 0 || slash == rest.length() - 1) {
+            throw new IllegalArgumentException("S3 URI 파싱 실패: " + uri);
+        }
+        return new S3Location(rest.substring(0, slash), rest.substring(slash + 1));
+    }
+
 }
