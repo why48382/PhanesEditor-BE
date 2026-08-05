@@ -57,7 +57,7 @@ public class FileController {
         return BaseResponse.success("업로드 완료");
     }
 
-    @DeleteMapping("/file/{fileIdx}")
+    @DeleteMapping("/{fileIdx}")
     public BaseResponse<String> deleteFile(@PathVariable Integer fileIdx, @AuthenticationPrincipal UserDto.AuthUser authUser){
         fileService.deleteFile(fileIdx, authUser);
         return BaseResponse.success("삭제되었습니다.");
