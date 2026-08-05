@@ -96,18 +96,21 @@ public class ProjectDto {
         private String description;
         private String language;
         private String creator;
+        private boolean isOwner;
 
-        public static ProjectList from(ProjectMember entity) {
+        public static ProjectList from(ProjectMember entity, Integer myIdx) {
+            boolean isOwner = entity.getProject().getUser().getIdx().equals(myIdx);
+
             return ProjectList.builder()
                     .idx(entity.getProject().getIdx())
                     .projectName(entity.getProject().getProjectName())
                     .description(entity.getProject().getDescription())
                     .language(entity.getProject().getLanguage().toString())
                     .creator(entity.getProject().getUser().getNickname())
+                    .isOwner(isOwner)
                     .build();
         }
     }
-
 
     @Getter
     @Builder

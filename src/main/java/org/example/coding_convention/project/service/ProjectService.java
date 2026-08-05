@@ -85,6 +85,6 @@ public class ProjectService {
     public List<ProjectDto.ProjectList> list(UserDto.AuthUser authUser) {
         Integer userId = authUser.getIdx();
         List<ProjectMember> result = projectMemberRepository.findByProjectList(userId);
-        return result.stream().map(ProjectDto.ProjectList::from).toList();
+        return result.stream().map(pm -> ProjectDto.ProjectList.from(pm, userId)).toList();
     }
 }
