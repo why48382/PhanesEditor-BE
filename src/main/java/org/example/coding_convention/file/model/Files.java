@@ -10,17 +10,17 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(
+        name = "files",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"project_idx", "file_name", "file_path"})
+        }
+)
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(
-        name = "files",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"project_idx", "file_name", "file_path" })
-        }
-)
 @EntityListeners(AuditingEntityListener.class)
 public class Files {
 
