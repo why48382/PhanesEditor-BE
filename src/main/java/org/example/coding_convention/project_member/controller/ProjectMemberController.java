@@ -20,7 +20,7 @@ public class ProjectMemberController {
             description = "프로젝트에 참여할 유저를 추가합니다."
     )
     @PostMapping("/create")
-    public BaseResponse projectCreate(@RequestBody ProjectMemberDto.ProjectMemberReq dto) {
+    public BaseResponse<String> projectCreate(@RequestBody ProjectMemberDto.ProjectMemberReq dto) {
         projectService.save(dto);
         return BaseResponse.success("성공");
     }
