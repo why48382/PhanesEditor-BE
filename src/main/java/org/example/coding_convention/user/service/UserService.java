@@ -137,8 +137,8 @@ public class UserService implements UserDetailsService {
         return userRepository.findByNickname(nickname);
     }
 
-    public List<UserDto.UserSearch> userSearch(String nickname) {
-        List<User> result = userRepository.findByNicknameLike("%" + nickname + "%");
+    public List<UserDto.UserSearch> userSearch(String nickname, Integer myIdx) {
+        List<User> result = userRepository.findByNicknameLikeAndIdxNot("%" + nickname + "%", myIdx);
         return result.stream().map(UserDto.UserSearch::from).toList();
     }
 }

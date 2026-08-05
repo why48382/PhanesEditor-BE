@@ -125,8 +125,8 @@ public class UserController {
             description = "닉네임으로 유저를 검색"
     )
     @GetMapping("/search")
-    public BaseResponse<List<UserDto.UserSearch>> userSearch(@RequestParam String nickname) {
-        List<UserDto.UserSearch> result = userService.userSearch(nickname);
+    public BaseResponse<List<UserDto.UserSearch>> userSearch(@RequestParam String nickname, @AuthenticationPrincipal UserDto.AuthUser authUser) {
+        List<UserDto.UserSearch> result = userService.userSearch(nickname, authUser.getIdx());
         return BaseResponse.success(result);
     }
 }
