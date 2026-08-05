@@ -11,6 +11,7 @@ import org.example.coding_convention.likes.model.Like;
 import org.example.coding_convention.project_member.model.ProjectMember;
 import org.example.coding_convention.user.model.User;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.List;
 
@@ -50,6 +51,7 @@ public class Project {
     private User user;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
+    @SQLRestriction("deleted = false")
     private List<Files> fileList;
 
     @BatchSize(size = 20)
