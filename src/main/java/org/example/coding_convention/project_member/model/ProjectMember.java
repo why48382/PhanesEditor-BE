@@ -7,10 +7,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.coding_convention.project.model.Project;
 import org.example.coding_convention.user.model.User;
-import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Getter
+@Table(
+        name = "project_member",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"project_id", "user_id"})
+        }
+)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

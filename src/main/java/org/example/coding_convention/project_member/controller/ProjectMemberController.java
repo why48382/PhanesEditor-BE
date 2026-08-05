@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.example.coding_convention.common.response.BaseResponse;
 import org.example.coding_convention.project_member.model.ProjectMemberDto;
 import org.example.coding_convention.project_member.service.ProjectMemberService;
+import org.example.coding_convention.user.model.UserDto;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "프로젝트 참가 맴버")
@@ -19,10 +21,17 @@ public class ProjectMemberController {
             summary = "프로젝트 맴버 추가",
             description = "프로젝트에 참여할 유저를 추가합니다."
     )
-    @PostMapping("/create")
-    public BaseResponse<String> projectCreate(@RequestBody ProjectMemberDto.ProjectMemberReq dto) {
-        projectService.save(dto);
-        return BaseResponse.success("성공");
+
+    @PostMapping("/addmember")
+    public BaseResponse<String> projectMemberUpdate(@RequestBody ProjectMemberDto.ProjectMemberReq dto, @AuthenticationPrincipal UserDto.AuthUser authUser) {
+        projectService.newMember(dto, authUser);
+        return BaseResponse.success("맴버 업데이트 성공");
+    }
+
+    @DeleteMapping("/removemember")
+    public BaseResponse<String> projectMemberDelete(@RequestBody ProjectMemberDto.ProjectMemberReq dto, @AuthenticationPrincipal UserDto.AuthUser authUser) {
+        projectService.delete(dto, authUser);
+        return BaseResponse.success("맴버 제거 성공");
     }
 
 }

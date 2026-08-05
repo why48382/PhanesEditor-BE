@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProjectMemberRepository extends JpaRepository<ProjectMember, Integer> {
     List<ProjectMember> findByUser_Idx(Integer userId);
@@ -19,4 +20,6 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, In
     List<ProjectMember> findByProjectList(@Param("userId") Integer userId);
 
     boolean existsByProject_IdxAndUser_Idx(Integer projectId, Integer userId);
+
+    Optional<ProjectMember> findByProject_IdxAndUser_Idx(Integer projectId, Integer userId);
 }
