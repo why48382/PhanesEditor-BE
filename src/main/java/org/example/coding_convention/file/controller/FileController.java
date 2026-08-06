@@ -28,9 +28,9 @@ public class FileController {
             description = "파일 저장시 실행되는 기능"
     )
     @PostMapping("/register")
-    public BaseResponse<String> register(@Valid @RequestBody FilesDto.Register dto) throws SQLException, IOException {
-        fileService.save(dto);
-
+    public BaseResponse<String> register(@Valid @RequestBody FilesDto.Register dto,
+                                         @AuthenticationPrincipal UserDto.AuthUser authUser) throws SQLException, IOException {
+        fileService.save(dto, authUser);
         return BaseResponse.success("파일 저장완료");
     }
 
@@ -50,10 +50,10 @@ public class FileController {
     @Operation(summary = "파일 내용 업데이트 (주기 저장용)",
             description = "fileName 에 해당하는 실제 저장 위치를 찾아 fileContents 로 업데이트")
     @PostMapping("/upload")
-    public BaseResponse<String> upload(@RequestBody FilesDto.ContentUpdateReq req) {
+    public BaseResponse<String> upload(@RequestBody FilesDto.ContentUpdateReq req,
+                                       @AuthenticationPrincipal UserDto.AuthUser authUser) {
         req.validate();
-        fileService.updateContent(req);
-
+        fileService.updateContent(req, authUser);
         return BaseResponse.success("업로드 완료");
     }
 

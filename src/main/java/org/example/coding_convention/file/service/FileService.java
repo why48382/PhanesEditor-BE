@@ -39,7 +39,12 @@ public class FileService {
     private final ProjectMemberRepository projectMemberRepository;
 
     @Transactional
-    public void updateContent(FilesDto.ContentUpdateReq req) {
+    public void updateContent(FilesDto.ContentUpdateReq req, UserDto.AuthUser authUser) {
+        boolean isMember = projectMemberRepository.existsByProject_IdxAndUser_Idx(req.getProjectId(), authUser.getIdx());
+        if (!isMember) {
+            throw new RuntimeException("해당 프로젝트의 멤버만 파일을 수정할 수 있습니다.");
+        }
+
         Files entity = fileRepository.findByPath(req.getFileName()).orElseThrow(() -> new IllegalArgumentException("File not found"));
 
         String url = entity.getURL();
@@ -65,7 +70,11 @@ public class FileService {
     }
 
 
-    public void save(FilesDto.Register dto) throws SQLException, IOException {
+    public void save(FilesDto.Register dto, UserDto.AuthUser authUser) throws SQLException, IOException {
+        boolean isMember = projectMemberRepository.existsByProject_IdxAndUser_Idx(dto.getIdx(), authUser.getIdx());
+        if (!isMember) {
+            throw new RuntimeException("해당 프로젝트의 멤버만 파일을 생성할 수 있습니다.");
+        }
 
         String URL = s3UploadService.upload(dto.getIdx(), dto.getName(), dto.getContents());
 
