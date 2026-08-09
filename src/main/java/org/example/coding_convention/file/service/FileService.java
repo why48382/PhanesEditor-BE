@@ -33,7 +33,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FileService {
     private final FileRepository fileRepository;
-    private final UserRepository userRepository;
     private final S3UploadService s3UploadService;
     private final S3Client s3Client; //S3 사용을 위한 객체 추가
     private final ProjectMemberRepository projectMemberRepository;
