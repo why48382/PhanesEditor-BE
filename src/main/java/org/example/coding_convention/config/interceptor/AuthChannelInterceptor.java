@@ -1,5 +1,8 @@
 package org.example.coding_convention.config.interceptor;
 
+import lombok.RequiredArgsConstructor;
+import org.example.coding_convention.project_member.repository.ProjectMemberRepository;
+import org.example.coding_convention.user.model.UserDto;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -10,16 +13,23 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.Set;
 
-// 웹 소켓 통신으로 클라이언트가 서버로 데이터를 보낼 때
 @Component
+@RequiredArgsConstructor
 public class AuthChannelInterceptor implements ChannelInterceptor {
+    private final ProjectMemberRepository projectMemberRepository;
+    private static final Set<String> ROOM_PREFIXES = Set.of(
+            "/topic/editor/", "/topic/chat/", "/app/editor/", "/app/chat/"
+    );
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
-        // 만료 시간 확인 추가
-        // 특정 경로마다 권한 확인
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+        if (accessor == null) {
+            return message;
+        }
+
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
             Map<String, Object> attributes = accessor.getSessionAttributes();
             if (attributes != null) {
@@ -28,7 +38,41 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
                     accessor.setUser(authentication);
                 }
             }
+            return message;
         }
+
+        if (StompCommand.SUBSCRIBE.equals(accessor.getCommand()) || StompCommand.SEND.equals(accessor.getCommand())) {
+            Integer roomId = extractRoomId(accessor.getDestination());
+            if (roomId == null) {
+                return message; // room 관련 목적지가 아니면 그냥 통과
+            }
+
+            Object userPrincipal = accessor.getUser();
+            if (!(userPrincipal instanceof Authentication authentication)
+                    || !(authentication.getPrincipal() instanceof UserDto.AuthUser authUser)) {
+                return null; // 인증 안 된 세션 -> 차단
+            }
+
+            boolean isMember = projectMemberRepository.existsByProject_IdxAndUser_Idx(roomId, authUser.getIdx());
+            if (!isMember) {
+                return null; // 해당 프로젝트 멤버 아님 -> 차단
+            }
+        }
+
         return message;
+    }
+
+    private Integer extractRoomId(String destination) {
+        if (destination == null) return null;
+        for (String prefix : ROOM_PREFIXES) {
+            if (destination.startsWith(prefix)) {
+                try {
+                    return Integer.parseInt(destination.substring(prefix.length()));
+                } catch (NumberFormatException e) {
+                    return null;
+                }
+            }
+        }
+        return null;
     }
 }
