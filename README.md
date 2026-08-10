@@ -71,8 +71,12 @@ PASSWORD: 1234
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Nginx](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)
 
-## 5. 시스템 아키텍처
+## 5. 아키텍처
+### 배포 환경
+![배포 아키텍처](assets/Architecture/Phanes Editor2.png)
+처음에는 AWS + Kubernetes(+ RDS)로 배포했지만, AWS 프리티어가 종료되고 프로젝트도 사실상 혼자 운영하는 규모로 줄어들면서, 이 정도 스케일에 쿠버네티스 클러스터를 유지하는 비용과 운영 복잡도가 맞지 않다고 판단해 Cloudflare Tunnel + Docker로 전환했습니다. 별도의 인증서 발급이나 포트포워딩 없이 빠르게 HTTPS 서비스를 운영할 수 있었고, 비용도 들지 않았습니다
 
+### 시스템 아키텍처
 ```mermaid
 flowchart TB
     subgraph Client["클라이언트 (Vue3 SPA)"]
