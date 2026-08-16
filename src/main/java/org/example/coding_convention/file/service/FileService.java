@@ -133,7 +133,7 @@ public class FileService {
 
 
     @Transactional
-    public void deleteFile(Integer fileIdx, UserDto.AuthUser authUser) {
+    public Integer deleteFile(Integer fileIdx, UserDto.AuthUser authUser) {
         Files file = fileRepository.findById(fileIdx)
                 .orElseThrow(() -> new IllegalArgumentException("파일을 찾을 수 없습니다."));
 
@@ -143,6 +143,8 @@ public class FileService {
         if (!isMember) {
             throw new RuntimeException("해당 프로젝트의 멤버만 파일을 삭제할 수 있습니다.");
         }
+
+        Integer projectIdx = file.getProject().getIdx();
 
         renameForDelete(file);
         fileRepository.save(file);
@@ -154,6 +156,7 @@ public class FileService {
             children.forEach(this::renameForDelete);
             fileRepository.saveAll(children);
         }
+        return projectIdx;
     }
 
     @Transactional

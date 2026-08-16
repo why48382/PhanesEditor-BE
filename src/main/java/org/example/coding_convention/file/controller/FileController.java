@@ -8,6 +8,7 @@ import org.example.coding_convention.common.response.BaseResponse;
 import org.example.coding_convention.file.model.FilesDto;
 import org.example.coding_convention.file.service.FileService;
 import org.example.coding_convention.user.model.UserDto;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,9 +20,8 @@ import java.sql.SQLException;
 @RequestMapping("/file")
 @Tag(name = "File", description = "파일 관련 API")
 public class FileController {
-
     private final FileService fileService;
-
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Operation(
             summary = "파일 저장 기능",
@@ -31,14 +31,15 @@ public class FileController {
     public BaseResponse<String> register(@Valid @RequestBody FilesDto.Register dto,
                                          @AuthenticationPrincipal UserDto.AuthUser authUser) throws SQLException, IOException {
         fileService.save(dto, authUser);
+        messagingTemplate.convertAndSend("/topic/project/" + dto.getIdx() + "/files", "changed");
         return BaseResponse.success("파일 저장완료");
     }
 
 
-@Operation(
-        summary = "파일 상세 조회기능",
-        description = "파일 조회시 실행되는 기능"
-)
+    @Operation(
+            summary = "파일 상세 조회기능",
+            description = "파일 조회시 실행되는 기능"
+    )
     @GetMapping("/read/{idx}")
     public BaseResponse<FilesDto.FileContentRes> read(@PathVariable Integer idx, @AuthenticationPrincipal UserDto.AuthUser authUser) throws SQLException, IOException {
         FilesDto.FileContentRes result = fileService.readContentByIdx(idx, authUser);
@@ -58,8 +59,9 @@ public class FileController {
     }
 
     @DeleteMapping("/{fileIdx}")
-    public BaseResponse<String> deleteFile(@PathVariable Integer fileIdx, @AuthenticationPrincipal UserDto.AuthUser authUser){
-        fileService.deleteFile(fileIdx, authUser);
+    public BaseResponse<String> deleteFile(@PathVariable Integer fileIdx, @AuthenticationPrincipal UserDto.AuthUser authUser) {
+        Integer projectIdx = fileService.deleteFile(fileIdx, authUser);
+        messagingTemplate.convertAndSend("/topic/project/" + projectIdx + "/files", "changed");
         return BaseResponse.success("삭제되었습니다.");
     }
 

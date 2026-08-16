@@ -20,7 +20,7 @@ import java.util.Set;
 public class AuthChannelInterceptor implements ChannelInterceptor {
     private final ProjectMemberRepository projectMemberRepository;
     private static final Set<String> ROOM_PREFIXES = Set.of(
-            "/topic/editor/", "/topic/chat/", "/app/editor/", "/app/chat/"
+            "/topic/editor/", "/topic/chat/", "/app/editor/", "/app/chat/", "/topic/project/"
     );
 
     @Override
@@ -66,8 +66,11 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
         if (destination == null) return null;
         for (String prefix : ROOM_PREFIXES) {
             if (destination.startsWith(prefix)) {
+                String rest = destination.substring(prefix.length());
+                int slashIdx = rest.indexOf('/');
+                String idPart = slashIdx >= 0 ? rest.substring(0, slashIdx) : rest;
                 try {
-                    return Integer.parseInt(destination.substring(prefix.length()));
+                    return Integer.parseInt(idPart);
                 } catch (NumberFormatException e) {
                     return null;
                 }
