@@ -1,6 +1,7 @@
 package org.example.coding_convention.config.interceptor;
 
 import lombok.RequiredArgsConstructor;
+import org.example.coding_convention.file.repository.FileRepository;
 import org.example.coding_convention.project_member.repository.ProjectMemberRepository;
 import org.example.coding_convention.user.model.UserDto;
 import org.springframework.messaging.Message;
@@ -19,6 +20,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class AuthChannelInterceptor implements ChannelInterceptor {
     private final ProjectMemberRepository projectMemberRepository;
+    private final FileRepository fileRepository;
     private static final Set<String> ROOM_PREFIXES = Set.of(
             "/topic/editor/", "/topic/chat/", "/app/editor/", "/app/chat/", "/topic/project/"
     );
@@ -53,7 +55,12 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
                 return null; // 인증 안 된 세션 -> 차단
             }
 
-            boolean isMember = projectMemberRepository.existsByProject_IdxAndUser_Idx(roomId, authUser.getIdx());
+            Integer projectIdx = resolveProjectIdx(accessor.getDestination(), roomId);
+            if (projectIdx == null) {
+                return null;
+            }
+
+            boolean isMember = projectMemberRepository.existsByProject_IdxAndUser_Idx(projectIdx, authUser.getIdx());
             if (!isMember) {
                 return null; // 해당 프로젝트 멤버 아님 -> 차단
             }
@@ -77,5 +84,12 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
             }
         }
         return null;
+    }
+
+    private Integer resolveProjectIdx(String destination, Integer roomId) {
+        if (destination.startsWith("/topic/editor/") || destination.startsWith("/app/editor/")) {
+            return fileRepository.findProjectIdxByFileIdx(roomId).orElse(null);
+        }
+        return roomId;
     }
 }

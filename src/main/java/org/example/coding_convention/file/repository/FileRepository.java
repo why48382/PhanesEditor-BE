@@ -14,4 +14,7 @@ public interface FileRepository extends JpaRepository<Files, Integer> {
     List<Files> findByProject_IdxAndDeletedFalse(Integer projectIdx);
 
     List<Files> findByProject_IdxAndPathStartingWithAndDeletedFalse(Integer projectIdx, String pathPrefix);
+
+    @Query("SELECT f.project.idx FROM Files f WHERE f.idx = :fileIdx")
+    Optional<Integer> findProjectIdxByFileIdx(Integer fileIdx);
 }
