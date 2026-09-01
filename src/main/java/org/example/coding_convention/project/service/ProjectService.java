@@ -2,6 +2,8 @@ package org.example.coding_convention.project.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.example.coding_convention.common.exception.BaseException;
+import org.example.coding_convention.common.response.BaseResponseStatus;
 import org.example.coding_convention.file.service.FileService;
 import org.example.coding_convention.project.model.Project;
 import org.example.coding_convention.project.model.ProjectDto;
@@ -79,7 +81,7 @@ public class ProjectService {
             }
             return ProjectDto.ProjectRead.from(project, authUser);
         }
-        return null;
+        throw BaseException.from(BaseResponseStatus.RESPONSE_NULL_ERROR);
     }
 
     public List<ProjectDto.ProjectList> list(UserDto.AuthUser authUser) {
