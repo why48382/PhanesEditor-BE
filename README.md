@@ -238,7 +238,7 @@ sequenceDiagram
 
     EA->>S: SEND /app/editor/{fileIdx}
     Note right of EA: onDidChangeModelContent 발생 (isProgrammaticEdit=false)<br/>isProgrammaticEdit가 false일때만 메시지 전송
-    S->>EA: 브로드캐스트 (본인에게도 echo)
+    S->>EA: 브로드캐스트   (본인에게도 echo)
     EA->>EA: isProgrammaticEdit = true
     Note over EA: senderId === userIdx(A) → executeEdits 생략<br/>(클라이언트를 신뢰함)
     EA->>EA: isProgrammaticEdit = false
@@ -254,14 +254,19 @@ sequenceDiagram
 `isProgrammaticEdit`는 반영 중 발생하는 이벤트로 인한 재전송을 막고, `senderId` 비교는 애초에 그 메시지를 반영할지 말지를 결정한다. 두 장치가 각각 다른
 문제(무한 루프 방지 / 자기 자신 재적용 방지)를 담당한다.
 
-> 현재는 두 사람이 같은 범위를 거의 동시에 편집하는 충돌 상황까지는 다루지 않는다. 이 부분은 OT/CRDT 기반 해결이 필요하며 향후 개선 사항으로 남겨두었다.
+[//]: # (> 현재는 두 사람이 같은 범위를 거의 동시에 편집하는 충돌 상황까지는 다루지 않는다. 이 부분은 OT/CRDT 기반 해결이 필요하며 향후 개선 사항으로 남겨두었다.)
 
-## 7. 향후 개선 사항
+[//]: # ()
+[//]: # (## 7. 향후 개선 사항)
 
-- OT/CRDT 기반 충돌 해결
-- 코드 실행기능
-- 코드 변경 이력
-- 권한 관리
+[//]: # ()
+[//]: # (- OT/CRDT 기반 충돌 해결)
+
+[//]: # (- 코드 실행기능)
+
+[//]: # (- 코드 변경 이력)
+
+[//]: # (- 권한 관리)
 
 [//]: # (GIF로 두개의 화면중 한개의 화면에서 로그인 프로젝트 생성 후 서로 웹소켓으로 통신되는 모습을 보여주면 됨)
 [//]: # (배포 후 링크까지 걸어줘야 완성임 테스트 계정도 넣어주고)
