@@ -214,7 +214,7 @@ sequenceDiagram
 sourceEditor.onDidChangeModelContent((event) => {
     if (isProgrammaticEdit) return
     event.changes.forEach(change => {
-        sendMessage({senderId: userIdx, text: change.text, range: change.range, type: 'nomal'})
+        sendMessage({senderId: userIdx, text: change.text, range: change.range, type: 'normal'})
     })
 })
 
