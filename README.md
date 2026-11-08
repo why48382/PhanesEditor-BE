@@ -17,12 +17,14 @@ PASSWORD: 1234
 
 ## 2. 프로젝트 정보
 
-| 항목           | 내용                                        |
-|----------------|-------------------------------------------|
-| 개발 기간      | 2025-06-18 ~ 2025-09-23                   |
-| 개발 인원      | 2명                                        |
-| 담당 역할      | Backend, Frontend, Infra                  |
-| 주요 기술 스택 | Spring Boot, Vue3, MariaDB, Docker, Nginx |
+| 항목           | 내용                                                      |
+|----------------|-----------------------------------------------------------|
+| 개발 기간      | 2025-06-18 ~ 2025-09-23                                    |
+| 개발 인원      | 2명                                                        |
+| 담당 역할      | Backend, Frontend, Infra                                   |
+| 담당 세부 역할 | CI/CD, 프로젝트 파일 기능, 접근 제어, 설정 보안, 성능개선      |
+| 주요 기술 스택 | Spring Boot, Vue3, MariaDB, Docker, Nginx                  |
+
 
 ## 3. 주요 기능
 
@@ -136,7 +138,7 @@ REST와 WebSocket 두 채널 모두 각자의 인증 관문(Security Filter Chai
 
 #### 원인 분석
 
-기존에는 Project > Files > ProjectMember > User > ••• Chat
+기존에는 Project > Files > ProjectMember > User > Chat
 
 Project 조회 후 연관 엔티티를 LAZY Loading으로 조회하면서 추가 SQL이 반복 실행되었다.
 
